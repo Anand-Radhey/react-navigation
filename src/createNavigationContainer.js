@@ -146,6 +146,7 @@ export default function createNavigationContainer<T: *>(
       const nav = Component.router.getStateForAction(action, state.nav);
 
       if (nav && nav !== state.nav) {
+        /*
         if (console.group) {
           console.group('Navigation Dispatch: ');
           console.log('Action: ', action);
@@ -155,6 +156,7 @@ export default function createNavigationContainer<T: *>(
         } else {
           console.log('Navigation Dispatch: ', { action, newState: nav, lastState: state.nav });
         }
+        */
         this.setState({ nav });
         return true;
       }
