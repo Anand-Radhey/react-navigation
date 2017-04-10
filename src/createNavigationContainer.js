@@ -157,7 +157,19 @@ export default function createNavigationContainer<T: *>(
           console.log('Navigation Dispatch: ', { action, newState: nav, lastState: state.nav });
         }
         */
-        this.setState({ nav });
+        if (action.type === NavigationActions.SET_PARAMS) {
+          // Serialize the merge of state to ensure that a race condition does not manifest in
+          // scenarios such as TabNavigator, when SET_PARAMS may be called by different screens
+          // in quick succession
+          this.setState((prevState: *) => ({
+            nav: {
+              ...prevState.nav,
+              routes: _mergeRoutes(action.key, prevState.nav.routes, nav.routes),
+            },
+          }));
+        } else {
+          this.setState({ nav });
+        }
         return true;
       }
       return false;
@@ -188,3 +200,24 @@ export default function createNavigationContainer<T: *>(
   return NavigationContainer;
 }
 
+/**
+ * This merges the routes from the previous state with the next state's.
+ * Care is taken to ensure that route merging is done only for the specified route key.
+ * @param forKey
+ * @param prevRoutes
+ * @param nextRoutes
+ * @return {Array}
+ * @private
+ */
+function _mergeRoutes(forKey: string, prevRoutes: Array, nextRoutes: Array) {
+  return prevRoutes.map((x: *, idx: number) => (idx >= nextRoutes.length ? x : {
+    ...x,
+    routes: x.routes.map((route: *) => {
+      let newRoute = null;
+      if (route.key === forKey) {
+        newRoute = nextRoutes[idx].routes.find((r: *) => r.key === forKey);
+      }
+      return newRoute || route;
+    }),
+  }));
+}
