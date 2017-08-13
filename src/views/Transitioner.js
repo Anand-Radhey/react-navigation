@@ -1,6 +1,7 @@
 /* @flow */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {
   Animated,
@@ -48,8 +49,6 @@ type State = {
   progress: NavigationAnimatedValue,
   scenes: Array<NavigationScene>,
 };
-
-const { PropTypes } = React;
 
 const DefaultTransitionSpec = TransitionConfigs.DefaultTransitionSpec;
 
