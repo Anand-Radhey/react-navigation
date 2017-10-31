@@ -1,7 +1,7 @@
 /* @flow */
 
 import {
-  BackAndroid,
+  BackHandler as BackAndroid,
   Linking,
 } from 'react-native';
 
